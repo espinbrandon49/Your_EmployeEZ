@@ -20,9 +20,3 @@ VALUES
 ('Martin', 'Vanburen', 8, NULL),
 ('William', 'Harrison', 5, 6);
 SELECT * FROM employees;
-
-
---DEFAULT NULL ON MANAGER_ID ON SEEDS.JS
-
--- a function to automatically enter
--- mysql -u root -p; source schema.sql; source seeds.sql;exit;
