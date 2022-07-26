@@ -1,5 +1,6 @@
 const express = require('express');
 const mysql = require('mysql2');
+//const index = require('./assets/js/index')
 const inquirer = require('inquirer');
 const questions = require('./assets/js/questions')
 
@@ -21,22 +22,79 @@ const db = mysql.createConnection(
   console.log(`Connected to the employees_db database.`)
 );
 
-startApp()
-function startApp() {
-  inquirer.prompt(questions.startQuestions)
+startMenu()
+function startMenu() {
+  inquirer.prompt(questions.startQuestion)
     .then(function (data) {
-      console.log(data)
+      console.log(data.startMenu)
+      switch (data.startMenu) {
+        case "View all departments":
+          viewDepartment();
+          break;
+        case "View all roles":
+          viewRoles()
+          break;
+        case "View all employees":
+          viewEmployees()
+          break;
+        case "Add a department":
+          console.log('dept')
+          addDepartment();
+          break;
+        case "Add a role":
+          console.log('role')
+          //addRole()
+          break;
+        case "Add an employee":
+          console.log('employee')
+          //addEmployee()
+          break;
+        case "Update an employee role":
+          console.log('updaterole')
+          //updateRole()
+          break;
+      }
     })
 }
 
+function viewDepartment() {
+  db.query('SELECT * FROM department', function (err, results) {
+    console.table(results);
+    startMenu()
+  });
+}
 
-// Query database
-// db.query('SELECT * FROM department', function (err, results) {
-//   console.log("********* SELECT * FROM department");
-//   console.table(results[3]);
-//   console.log("*********");
-// });
+function viewRoles() {
+  db.query('SELECT * FROM roles', function (err, results) {
+    console.table(results);
+  });
+  startMenu()
+}
 
+function viewEmployees() {
+  db.query('SELECT * FROM employees', function (err, results) {
+    console.table(results);
+  });
+  startMenu()
+}
+
+function addDepartment() {
+  inquirer.prompt()
+  db.query('INSERT INTO department (name) VALUES ("Farley")', function (err, results) {
+    if (err) throw err;
+    console.log(results);
+  });
+  startMenu()
+}
+
+
+//Why are my tables messy in the terminal?
+
+// REMOVE INDEX COLUMN FROM CONSOLE.TABLE ON SERVER.JS
+// why does it ask "What would you like to do?" twice?
+// make a table from mysql2?
+// DEFAULT NULL ON MANAGER_ID ON SEEDS.JS
+//  You might also want to make your queries asynchronous. MySQL2 exposes a `.promise()` function on Connections to upgrade an existing non-Promise connection to use Promises. To learn more and make your queries asynchronous, refer to the [npm documentation on MySQL2](https://www.npmjs.com/package/mysql2).
 
 
 

@@ -8,7 +8,7 @@ VALUES
 ('Finance Analyst', 50000, 1), ('Accountant', 85000, 1), ('Salesperson', 40000, 2), ('Account Manager', 75000, 2), ('Software Engineer', 75000, 3),('Lead Engineer', 100000, 3),('Legal Analyst', 50000, 4),('Lawyer', 100000, 4);
 SELECT * FROM roles;
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
+INSERT INTO employees (first_name, last_name, role_id, manager_id)
 VALUES
 ('George', 'Washington', 1, 2),
 ('John', 'Adams', 2, NULL),
@@ -19,7 +19,10 @@ VALUES
 ('Martin', 'Vanburen', 7, 8),
 ('Martin', 'Vanburen', 8, NULL),
 ('William', 'Harrison', 5, 6);
-SELECT * FROM employee;
+SELECT * FROM employees;
 
--- DEFAULT NULL??
--- a function to automatically load dbs?
+
+--DEFAULT NULL ON MANAGER_ID ON SEEDS.JS
+
+-- a function to automatically enter
+-- mysql -u root -p; source schema.sql; source seeds.sql;exit;
