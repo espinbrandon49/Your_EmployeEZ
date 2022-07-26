@@ -22,3 +22,4 @@ VALUES
 SELECT * FROM employee;
 
 -- DEFAULT NULL??
+-- a function to automatically load dbs?
