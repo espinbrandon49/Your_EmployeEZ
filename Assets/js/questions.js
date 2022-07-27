@@ -39,12 +39,12 @@ const questions = {
       message: "What is the last name of the employee?",
       name: 'empLName',
     },
-    {
-      type: 'list',
-      message: "What is the role of the employee?",
-      name: 'empRole',
-      choices: ['Finance Analyst', 'Accountant', 'Salesperson', 'Account Manager', 'Software Engineer', 'Lead Engineer', 'Legal Analyst', 'Lawyer']
-    },
+    // {
+    //   type: 'list',
+    //   message: "What is the role of the employee?",
+    //   name: 'empRole',
+    //   choices: ['Finance Analyst', 'Accountant', 'Salesperson', 'Account Manager', 'Software Engineer', 'Lead Engineer', 'Legal Analyst', 'Lawyer']
+    // },
   ],
   updateEmployee: [
     {
@@ -55,7 +55,7 @@ const questions = {
     {
       type: 'list',
       message: "What is the employee's new role?",
-      name: 'updateRole',
+      name: 'updateRole'
     },
   ],
 }

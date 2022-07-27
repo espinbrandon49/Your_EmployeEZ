@@ -116,70 +116,112 @@ function addRole() {
   //startMenu() is popping up before I can enter the new role
 }
 
+// function addEmployee() {
+//   inquirer.prompt(questions.addEmployee)
+//     .then(function (data) {
+//       let empRole;
+//       switch (data.empRole) {
+//         case 'Finance Analyst':
+//           empRole = 1;
+//           break;
+//         case 'Accountant':
+//           empRole = 2;
+//           break;
+//         case 'Salesperson':
+//           empRole = 3;
+//           break;
+//         case 'Account Manager':
+//           empRole = 4;
+//           break;
+//         case 'Software Engineer':
+//           empRole = 5;
+//           break;
+//         case 'Lead Engineer':
+//           empRole = 6;
+//           break;
+//         case 'Legal Analyst':
+//           empRole = 7;
+//           break;
+//         case 'Lawyer':
+//           empRole = 8;
+//           break;
+//       }
+
+//       let choices = ['none']
+//       db.query('SELECT * FROM employees', function (err, results) {
+//         results.map(employee => {
+//           choices.push(employee.first_name + ' ' + employee.last_name)
+//         })
+
+//         inquirer.prompt([
+//           {
+//             type: 'list',
+//             message: "Who is the manager of the employee?",
+//             name: 'empMan',
+//             choices: choices
+//           }
+//         ])
+//           .then(function (data2) {
+//             let managerId = choices.indexOf(data2.empMan)
+
+//             db.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [data.empFName, data.empLName, empRole, managerId], function (err, results) {
+//               if (err) throw err;
+//               console.log([data.empFName, data.empLName, empRole, managerId])
+//             });
+//           })
+//       })
+//     });
+// }
 function addEmployee() {
   inquirer.prompt(questions.addEmployee)
     .then(function (data) {
-      let empRole;
-      switch (data.empRole) {
-        case 'Finance Analyst':
-          empRole = 1;
-          break;
-        case 'Accountant':
-          empRole = 2;
-          break;
-        case 'Salesperson':
-          empRole = 3;
-          break;
-        case 'Account Manager':
-          empRole = 4;
-          break;
-        case 'Software Engineer':
-          empRole = 5;
-          break;
-        case 'Lead Engineer':
-          empRole = 6;
-          break;
-        case 'Legal Analyst':
-          empRole = 7;
-          break;
-        case 'Lawyer':
-          empRole = 8;
-          break;
-      }
-      db.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [data.empFName, data.empLName, empRole, 1], function (err, results) {
-        if (err) throw err;
-        console.log([data.empFName, data.empLName, empRole, 1])
-      });
-    })
-}
 
-function managers() {
-  let choices = []
-  let manager;
-  db.query('SELECT * FROM employees', function (err, results) {
-    console.table(results)
-    results.map(employee => {
-      choices.push(employee.first_name + ' ' + employee.last_name)
-    })
-    inquirer.prompt([
-      {
-        type: 'list',
-        message: "Who is the manager of the employee?",
-        name: 'empMan',
-        choices: choices
-      }
-    ])
-      .then(function (data) {
-        manager = data.empMan
-        console.log(manager, 1)
-        console.log(choices.indexOf(manager) + 1)
-      })
-  });
-  return manager
-}
-console.log(managers(), 2)
+      let roles = []
+      db.query('SELECT * FROM roles', function (err, results) {
+        results.map(role => {
+          roles.push(role.title)
+        })
+        inquirer.prompt([
+          {
+            type: 'list',
+            message: "What is the role of the employee?",
+            name: 'empRole',
+            choices: roles
+          }
+        ])
+        .then(function(data1) {
+          let empRole = roles.indexOf(data1.empRole) + 1
 
-//other 2 functions
+          let choices = ['none']
+          db.query('SELECT * FROM employees', function (err, results) {
+            results.map(employee => {
+              choices.push(employee.first_name + ' ' + employee.last_name)
+            })
+  
+            inquirer.prompt([
+              {
+                type: 'list',
+                message: "Who is the manager of the employee?",
+                name: 'empMan',
+                choices: choices
+              }
+            ])
+              .then(function (data2) {
+                let managerId = choices.indexOf(data2.empMan)
+  
+                db.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [data.empFName, data.empLName, empRole, managerId], function (err, results) {
+                  if (err) throw err;
+                  console.log([data.empFName, data.empLName, empRole, managerId])
+                });
+              })
+          })
+        })
+        //})11
+      })//maybe11
+    });
+}
+addEmployee()
+
 //startMenu() is popping up before I can enter the info to add
 //You might also want to make your queries asynchronous
 
