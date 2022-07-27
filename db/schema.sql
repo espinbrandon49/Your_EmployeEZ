@@ -3,13 +3,11 @@ CREATE DATABASE employees_db;
 
 USE employees_db;
 
-DROP DATABASE IF EXISTS department;
 CREATE TABLE department (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(30)
 );
 
-DROP DATABASE IF EXISTS roles;
 CREATE TABLE roles (
   id INT AUTO_INCREMENT,
   title VARCHAR(30),
@@ -20,7 +18,6 @@ CREATE TABLE roles (
   ON DELETE SET NULL
 );
 
-DROP DATABASE IF EXISTS employees;
 CREATE TABLE employees (
   id INT AUTO_INCREMENT,
   first_name VARCHAR(30),

@@ -21,7 +21,7 @@ const db = mysql.createConnection(
   console.log(`Connected to the employees_db database.`)
 );
 
-//startMenu()
+startMenu()
 function startMenu() {
   inquirer.prompt(questions.startQuestion)
     .then(function (data) {
@@ -86,58 +86,36 @@ function addDepartment() {
   //startMenu() is popping up before I can enter the new department
 }
 
-// function addRole() {
-//   inquirer.prompt(questions.addRole)
-//     .then(function (data) {
-//       let departmentID;
-//       switch (data.addRoleDept) {
-//         case 'Finance':
-//           departmentID = 1;
-//           break;
-//         case 'Sales':
-//           departmentID = 2;
-//           break;
-//         case 'Engineering':
-//           departmentID = 3;
-//           break;
-//         case 'Legal':
-//           departmentID = 4;
-//           break;
-//       }
-//       //const salary = parseInt(data.addRoleSalary)
-//       const deptId = departmentID
-//       db.query(`INSERT INTO roles (title, salary , department_id) VALUES (?, ?, ?)`, [data.addRoleName, (data.addRoleSalary), deptId], function (err, results) {
-//         if (err) throw err;
-//         console.log([data.addRoleName, data.addRoleSalary, deptId])
-//       });
-//     })
-//   //startMenu() is popping up before I can enter the new role
-// }
-
 function addRole() {
   inquirer.prompt(questions.addRole)
     .then(function (data) {
-      let departmentID;
-      switch (data.addRoleDept) {
-        case 'Finance':
-          departmentID = 1;
-          break;
-        case 'Sales':
-          departmentID = 2;
-          break;
-        case 'Engineering':
-          departmentID = 3;
-          break;
-        case 'Legal':
-          departmentID = 4;
-          break;
-      }
-      //const salary = parseInt(data.addRoleSalary)
-      const deptId = departmentID
-      db.query(`INSERT INTO roles (title, salary , department_id) VALUES (?, ?, ?)`, [data.addRoleName, (data.addRoleSalary), deptId], function (err, results) {
-        if (err) throw err;
-        console.log([data.addRoleName, data.addRoleSalary, deptId])
-      });
+      let departments = [];
+      db.query('SELECT * FROM department', function (err, results) {
+        results.map(department => {
+          departments.push(department.name)
+        })
+        inquirer.prompt([
+          {
+            type: 'list',
+            message: "What department does this role belong to?",
+            name: 'addRoleDept',
+            choices: departments
+          },
+        ])
+          .then(function (data1) {
+            console.log(data1, 1)
+            console.log(data1.addRoleDept, 2)
+            console.log(departments.indexOf(data1.addRoleDept))
+            let deptId = departments.indexOf(data1.addRoleDept) + 1
+            console.log(deptId, 3)
+
+            console.log([data.addRoleName, data.addRoleSalary, deptId])
+            db.query(`INSERT INTO roles (title, salary , department_id) VALUES (?, ?, ?)`, [data.addRoleName, data.addRoleSalary, deptId], function (err, results) {
+              if (err) throw err;
+              console.log([data.addRoleName, data.addRoleSalary, deptId])
+            });
+          })
+      })
     })
   //startMenu() is popping up before I can enter the new role
 }
@@ -172,7 +150,7 @@ function addEmployee() {
                   choices: choices
                 }
               ])
-                .then(function (data2) {     
+                .then(function (data2) {
                   let empRole = roles.indexOf(data1.empRole) + 1
                   let managerId = choices.indexOf(data2.empMan)
                   db.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [data.empFName, data.empLName, empRole, managerId], function (err, results) {

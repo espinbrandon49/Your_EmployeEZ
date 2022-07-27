@@ -21,12 +21,12 @@ const questions = {
       message: "What is the salary of the role?",
       name: 'addRoleSalary',
     },
-    {
-      type: 'list',
-      message: "What department does this role belong to?",
-      name: 'addRoleDept',
-      choices: ['Finance', 'Sales', 'Engineering', 'Legal']
-    },
+    // {
+    //   type: 'list',
+    //   message: "What department does this role belong to?",
+    //   name: 'addRoleDept',
+    //   choices: ['Finance', 'Sales', 'Engineering', 'Legal']
+    // },
   ],
   addEmployee: [
     {
