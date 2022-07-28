@@ -19,9 +19,8 @@ const db = mysql.createConnection(
     database: 'employees_db'
   },
   console.log(`Connected to the employees_db database.`)
-);
+);//hide credentials
 
-startMenu()
 function startMenu() {
   inquirer.prompt(questions.startQuestion)
     .then(function (data) {
@@ -70,7 +69,7 @@ function viewEmployees() {
     console.table(results);
     startMenu()
   });
-}//1. need to add manager name 2. need to remove index column; 
+}//1. PRIORITY need to add manager name 2. need to remove index column; 
 
 function addDepartment() {
   inquirer.prompt(questions.addDepartment)
@@ -121,6 +120,8 @@ function addEmployee() {
     .then(function (data) {
       let titles = []
       let titleId = []
+      let managers = ['none']
+      let managerIds = [null]
       db.query('SELECT * FROM roles', function (err, results) {
         results.map(role => {
           titles.push(role.title)
@@ -135,33 +136,34 @@ function addEmployee() {
           }
         ])
           .then(function (data1) {
-            let choices = ['none']
             db.query('SELECT * FROM employees', function (err, results) {
               results.map(employee => {
-                choices.push(employee.first_name + ' ' + employee.last_name)
+                managers.push(employee.first_name + ' ' + employee.last_name)
+                managerIds.push(employee.id)
               })
               inquirer.prompt([
                 {
                   type: 'list',
                   message: "Who is the manager of the employee?",
                   name: 'empMan',
-                  choices: choices
+                  choices: managers
                 }
               ])
                 .then(function (data2) {
                   let roleIdIndex = titles.indexOf(data1.empRole) + 1
                   let roleId = titleId[titleId.indexOf(roleIdIndex)]
-                  let managerId = choices.indexOf(data2.empMan)
+                  let managerIdIndex = managers.indexOf(data2.empMan)
+                  let managerId = managerIds[managerIds.indexOf(managerIdIndex)]
                   db.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [data.empFName, data.empLName, roleId, managerId], function (err, results) {
                     if (err) throw err;
                     console.log([data.empFName, data.empLName, roleId, managerId])
+                    startMenu()
                   });
                 })
             })
           })
       })
     });
-  //startMenu() is popping up before I can enter the new department
 }
 
 function updateRole() {
@@ -203,6 +205,7 @@ function updateRole() {
               db.query(`UPDATE employees SET role_id=? WHERE id=?;`, [roleId, nameId], function (err, results) {
                 if (err) throw err;
                 console.log(data.updateEmp, data1.updateRole, 'red')
+                startMenu()
               });
             })
         })
@@ -216,6 +219,7 @@ app.use((req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-});
+  startMenu()
+})
 
 

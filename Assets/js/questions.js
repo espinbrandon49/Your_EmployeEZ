@@ -21,12 +21,6 @@ const questions = {
       message: "What is the salary of the role?",
       name: 'addRoleSalary',
     },
-    // {
-    //   type: 'list',
-    //   message: "What department does this role belong to?",
-    //   name: 'addRoleDept',
-    //   choices: ['Finance', 'Sales', 'Engineering', 'Legal']
-    // },
   ],
   addEmployee: [
     {
@@ -38,18 +32,6 @@ const questions = {
       type: 'input',
       message: "What is the last name of the employee?",
       name: 'empLName',
-    },
-  ],
-  updateEmployee: [
-    {
-      type: 'list',
-      message: "Which employee do you want to update?",
-      name: 'updateEmp',
-    },
-    {
-      type: 'list',
-      message: "What is the employee's new role?",
-      name: 'updateRole'
     },
   ],
 }
