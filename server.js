@@ -89,9 +89,11 @@ function addRole() {
   inquirer.prompt(questions.addRole)
     .then(function (data) {
       let departments = [];
+      let departmentsId = []
       db.query('SELECT * FROM department', function (err, results) {
         results.map(department => {
           departments.push(department.name)
+          departmentsId.push(department.id)
         })
         inquirer.prompt([
           {
@@ -102,7 +104,8 @@ function addRole() {
           },
         ])
           .then(function (data1) {
-            let deptId = departments.indexOf(data1.addRoleDept) + 1
+            let deptIdIndex = departments.indexOf(data1.addRoleDept) + 1
+            let deptId = departmentsId[departmentsId.indexOf(deptIdIndex)]
             db.query(`INSERT INTO roles (title, salary , department_id) VALUES (?, ?, ?)`, [data.addRoleName, data.addRoleSalary, deptId], function (err, results) {
               if (err) throw err;
               console.log([data.addRoleName, data.addRoleSalary, deptId])
@@ -112,7 +115,7 @@ function addRole() {
       })
     })
   //GOOD
-}
+}//GOOD
 
 function addEmployee() {
   inquirer.prompt(questions.addEmployee)
