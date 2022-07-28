@@ -21,7 +21,7 @@ const db = mysql.createConnection(
   console.log(`Connected to the employees_db database.`)
 );
 
-startMenu()
+//startMenu()
 function startMenu() {
   inquirer.prompt(questions.startQuestion)
     .then(function (data) {
@@ -103,13 +103,7 @@ function addRole() {
           },
         ])
           .then(function (data1) {
-            console.log(data1, 1)
-            console.log(data1.addRoleDept, 2)
-            console.log(departments.indexOf(data1.addRoleDept))
             let deptId = departments.indexOf(data1.addRoleDept) + 1
-            console.log(deptId, 3)
-
-            console.log([data.addRoleName, data.addRoleSalary, deptId])
             db.query(`INSERT INTO roles (title, salary , department_id) VALUES (?, ?, ?)`, [data.addRoleName, data.addRoleSalary, deptId], function (err, results) {
               if (err) throw err;
               console.log([data.addRoleName, data.addRoleSalary, deptId])
@@ -162,11 +156,41 @@ function addEmployee() {
           })
       })
     });
+  //startMenu() is popping up before I can enter the new department
 }
 
+updateRole()
 function updateRole() {
+  let names = []
+  let namesId = []
+  db.query(`SELECT * FROM employees`, function (err, results) {
+    results.map(name => {
+      names.push(name.first_name +' ' +name.last_name)
+      namesId.push(name.id)
+    })
+    console.log(namesId)
+    inquirer.prompt([
+      {
+        type: 'list',
+        message: "Which employee do you want to update?",
+        name: 'updateEmp',
+        choices: names
+      }
+    ])
+      .then(function (data) {
+        console.log(data)
+       // console.log(roles.indexOf(data.updateEmp) + 1)
+       let nameIdIndex = names.indexOf(data.updateEmp) + 1
+       let nameId =  namesId[namesId.indexOf(nameIdIndex)]
 
+        // db.query(`UPDATE employee SET role_id = ? WHERE id = ?`), [roleId, nameId], function (err, results) {
+        //   if (err) throw err;
+        //   console.log(newRole)
+        // }
+      })
+  })
 }
+
 app.use((req, res) => {
   res.status(404).end();
 });
@@ -175,6 +199,9 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
+// UPDATE table_name
+// SET column1 = value1, column2 = value2, ...
+// WHERE condition;
 //startMenu() is popping up before I can enter the info to add
 //You might also want to make your queries asynchronous
 // why does it ask "What would you like to do?" twice?
