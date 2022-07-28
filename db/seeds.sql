@@ -1,12 +1,12 @@
 INSERT INTO department (name) 
 VALUES
 ('Finance'), ('Sales'),('Engineering'), ('Legal');
-SELECT * FROM department;
+-- SELECT * FROM department;
 
 INSERT INTO roles (title, salary, department_id)
 VALUES
 ('Finance Analyst', 50000, 1), ('Accountant', 85000, 1), ('Salesperson', 40000, 2), ('Account Manager', 75000, 2), ('Software Engineer', 75000, 3),('Lead Engineer', 100000, 3),('Legal Analyst', 50000, 4),('Lawyer', 100000, 4);
-SELECT * FROM roles;
+-- SELECT * FROM roles;
 
 INSERT INTO employees (first_name, last_name, role_id, manager_id)
 VALUES
@@ -19,4 +19,9 @@ VALUES
 ('Martin', 'Vanburen', 7, 8),
 ('Martin', 'Vanburen', 8, NULL),
 ('William', 'Harrison', 5, 6);
-SELECT * FROM employees;
+-- SELECT * FROM employees;
+
+-- THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role
+
+SELECT DISTINCT roles.title, roles.id AS roles_Id, department.name, roles.salary 
+FROM department JOIN roles ON department.id = department_id

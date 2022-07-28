@@ -57,14 +57,14 @@ function viewDepartment() {
     console.table(results);
     startMenu()
   });
-}
+}//need to remove index column
 
 function viewRoles() {
-  db.query('SELECT * FROM roles', function (err, results) {
+  db.query('SELECT DISTINCT roles.title, roles.id AS roles_Id, department.name, roles.salary FROM department JOIN roles ON department.id = department_id', function (err, results) {
     console.table(results);
   });
   startMenu()
-}
+}//1. need to remove index column; 2. table is overlapped by Inquirer prompts
 
 function viewEmployees() {
   db.query('SELECT * FROM employees', function (err, results) {
@@ -158,7 +158,6 @@ function addEmployee() {
   //startMenu() is popping up before I can enter the new department
 }
 
-//updateRole()
 function updateRole() {
   let names = []
   let namesId = []
