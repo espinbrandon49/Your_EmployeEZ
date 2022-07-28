@@ -21,7 +21,28 @@ VALUES
 ('William', 'Harrison', 5, 6);
 -- SELECT * FROM employees;
 
--- THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role
+--  including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
 
-SELECT DISTINCT roles.title, roles.id AS roles_Id, department.name, roles.salary 
-FROM department JOIN roles ON department.id = department_id
+-- SELECT DISTINCT employees.id, employees.first_name, employees.last_name, roles.title, department.name, roles.salary, employees.manager_id
+-- FROM employees 
+-- JOIN roles
+-- ON employees.role_id = roles.id
+-- JOIN department
+-- ON department.id = roles.department_id
+
+SELECT DISTINCT employees.id, employees.first_name, employees.last_name, roles.title, department.name, roles.salary, employees.manager_id,CONCAT(employees.first_name, ' ', employees.last_name) AS Manager
+FROM employees 
+JOIN roles
+ON employees.role_id = roles.id
+JOIN department
+ON department.id = roles.department_id
+
+SELECT DISTINCT employees.id, employees.first_name, employees.last_name, roles.title, department.name, roles.salary, employees.manager_id,CONCAT(A.first_name, ' ', A.last_name) AS Manager
+FROM employees, employees A
+WHERE employees.id <> A.manager_id
+JOIN roles
+ON employees.role_id = roles.id
+JOIN department
+ON department.id = roles.department_id
+JOIN employees A
+ON employees.id = A.manager_id

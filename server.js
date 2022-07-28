@@ -50,28 +50,28 @@ function startMenu() {
           break;
       }
     })
-}
+}//GOOD
 
 function viewDepartment() {
   db.query('SELECT * FROM department', function (err, results) {
     console.table(results);
     startMenu()
   });
-}//need to remove index column
+}//1. need to remove index column
 
 function viewRoles() {
   db.query('SELECT DISTINCT roles.title, roles.id AS roles_Id, department.name, roles.salary FROM department JOIN roles ON department.id = department_id', function (err, results) {
     console.table(results);
-  });
-  startMenu()
-}//1. need to remove index column; 2. table is overlapped by Inquirer prompts
+    startMenu()
+  })
+}//1. need to remove index column;
 
 function viewEmployees() {
-  db.query('SELECT * FROM employees', function (err, results) {
+  db.query('SELECT DISTINCT employees.id, employees.first_name, employees.last_name, roles.title, department.name, roles.salary, employees.manager_id, CONCAT(employees.first_name, " ", employees.last_name) AS Manager  FROM employees JOIN roles ON employees.role_id = roles.id JOIN department ON department.id = roles.department_id', function (err, results) {
     console.table(results);
+    startMenu()
   });
-  startMenu()
-}
+}//1. need to add manager name 2. need to remove index column; 
 
 function addDepartment() {
   inquirer.prompt(questions.addDepartment)
@@ -79,11 +79,11 @@ function addDepartment() {
       const departmentName = data.addDepartment
       db.query('INSERT INTO department (name) VALUES (?)', departmentName, function (err, results) {
         if (err) throw err;
-        console.log(`${departmentName} added as a new Deparment`);
-      });
+        console.log(`${departmentName} added as a new Deparment`)
+        startMenu()
+      })
     })
-  //startMenu() is popping up before I can enter the new department
-}
+}//GOOD
 
 function addRole() {
   inquirer.prompt(questions.addRole)
@@ -106,11 +106,12 @@ function addRole() {
             db.query(`INSERT INTO roles (title, salary , department_id) VALUES (?, ?, ?)`, [data.addRoleName, data.addRoleSalary, deptId], function (err, results) {
               if (err) throw err;
               console.log([data.addRoleName, data.addRoleSalary, deptId])
+              startMenu()
             });
           })
       })
     })
-  //startMenu() is popping up before I can enter the new role
+  //GOOD
 }
 
 function addEmployee() {
@@ -194,7 +195,7 @@ function updateRole() {
               let rolesIdIndex = roles.indexOf(data1.updateRole) + 1
               let roleId = rolesId[rolesId.indexOf(rolesIdIndex)]
 
-              db.query(`UPDATE employees SET role_id=? WHERE id=?;`,[roleId, nameId], function (err, results) {
+              db.query(`UPDATE employees SET role_id=? WHERE id=?;`, [roleId, nameId], function (err, results) {
                 if (err) throw err;
                 console.log(data.updateEmp, data1.updateRole, 'red')
               });
