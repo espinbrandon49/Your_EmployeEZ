@@ -1,7 +1,8 @@
 const express = require('express');
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
-const questions = require('./assets/js/questions')
+const cTable = require('console.table');
+const questions = require('./assets/js/questions');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -19,7 +20,7 @@ const db = mysql.createConnection(
     database: 'employees_db'
   },
   console.log(`Connected to the employees_db database.`)
-);//hide credentials
+);
 
 function startMenu() {
   inquirer.prompt(questions.startQuestion)
@@ -55,21 +56,21 @@ function viewDepartment() {
     console.table(results);
     startMenu()
   });
-}//1. need to remove index column
+}
 
 function viewRoles() {
   db.query('SELECT DISTINCT roles.title, roles.id AS roles_Id, department.name, roles.salary FROM department JOIN roles ON department.id = department_id', function (err, results) {
     console.table(results);
     startMenu()
   })
-}//1. need to remove index column;
+}
 
 function viewEmployees() {
-  db.query('SELECT DISTINCT employees.id, employees.first_name, employees.last_name, roles.title, department.name, roles.salary, employees.manager_id, CONCAT(employees.first_name, " ", employees.last_name) AS Manager  FROM employees JOIN roles ON employees.role_id = roles.id JOIN department ON department.id = roles.department_id', function (err, results) {
+  db.query('SELECT DISTINCT employees.id, employees.first_name, employees.last_name, roles.title, department.name, roles.salary, CONCAT(b.first_name, " ", b.last_name) AS Manager FROM employees JOIN roles ON employees.role_id = roles.id JOIN department ON department.id = roles.department_id LEFT JOIN employees b ON employees.manager_id = b.id', function (err, results) {
     console.table(results);
     startMenu()
   });
-}//1. PRIORITY need to add manager name 2. need to remove index column; 
+}
 
 function addDepartment() {
   inquirer.prompt(questions.addDepartment)
@@ -81,7 +82,7 @@ function addDepartment() {
         startMenu()
       })
     })
-}//GOOD
+}
 
 function addRole() {
   inquirer.prompt(questions.addRole)
