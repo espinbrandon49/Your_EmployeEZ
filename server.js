@@ -25,7 +25,6 @@ startMenu()
 function startMenu() {
   inquirer.prompt(questions.startQuestion)
     .then(function (data) {
-      console.log(data.startMenu)
       switch (data.startMenu) {
         case "View all departments":
           viewDepartment();
@@ -50,7 +49,7 @@ function startMenu() {
           break;
       }
     })
-}//GOOD
+}// why does it ask "What would you like to do?" twice?
 
 function viewDepartment() {
   db.query('SELECT * FROM department', function (err, results) {
@@ -120,17 +119,19 @@ function addRole() {
 function addEmployee() {
   inquirer.prompt(questions.addEmployee)
     .then(function (data) {
-      let roles = []
+      let titles = []
+      let titleId = []
       db.query('SELECT * FROM roles', function (err, results) {
         results.map(role => {
-          roles.push(role.title)
+          titles.push(role.title)
+          titleId.push(role.id)
         })
         inquirer.prompt([
           {
             type: 'list',
             message: "What is the role of the employee?",
             name: 'empRole',
-            choices: roles
+            choices: titles
           }
         ])
           .then(function (data1) {
@@ -148,11 +149,12 @@ function addEmployee() {
                 }
               ])
                 .then(function (data2) {
-                  let empRole = roles.indexOf(data1.empRole) + 1
+                  let roleIdIndex = titles.indexOf(data1.empRole) + 1
+                  let roleId = titleId[titleId.indexOf(roleIdIndex)]
                   let managerId = choices.indexOf(data2.empMan)
-                  db.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [data.empFName, data.empLName, empRole, managerId], function (err, results) {
+                  db.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [data.empFName, data.empLName, roleId, managerId], function (err, results) {
                     if (err) throw err;
-                    console.log([data.empFName, data.empLName, empRole, managerId])
+                    console.log([data.empFName, data.empLName, roleId, managerId])
                   });
                 })
             })
@@ -216,6 +218,4 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-//startMenu() is popping up before I can enter the info to add
-//You might also want to make your queries asynchronous
-// why does it ask "What would you like to do?" twice?
+
