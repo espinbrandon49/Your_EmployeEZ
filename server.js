@@ -21,7 +21,7 @@ const db = mysql.createConnection(
   console.log(`Connected to the employees_db database.`)
 );
 
-//startMenu()
+startMenu()
 function startMenu() {
   inquirer.prompt(questions.startQuestion)
     .then(function (data) {
@@ -46,8 +46,7 @@ function startMenu() {
           addEmployee()
           break;
         case "Update an employee role":
-          console.log('updaterole')
-          //updateRole()
+          updateRole()
           break;
       }
     })
@@ -159,16 +158,17 @@ function addEmployee() {
   //startMenu() is popping up before I can enter the new department
 }
 
-updateRole()
+//updateRole()
 function updateRole() {
   let names = []
   let namesId = []
+  let roles = []
+  let rolesId = []
   db.query(`SELECT * FROM employees`, function (err, results) {
     results.map(name => {
-      names.push(name.first_name +' ' +name.last_name)
+      names.push(name.first_name + ' ' + name.last_name)
       namesId.push(name.id)
     })
-    console.log(namesId)
     inquirer.prompt([
       {
         type: 'list',
@@ -178,15 +178,29 @@ function updateRole() {
       }
     ])
       .then(function (data) {
-        console.log(data)
-       // console.log(roles.indexOf(data.updateEmp) + 1)
-       let nameIdIndex = names.indexOf(data.updateEmp) + 1
-       let nameId =  namesId[namesId.indexOf(nameIdIndex)]
+        db.query(`SELECT * FROM roles`, function (err, results) {
+          results.map(role => roles.push(role.title))
+          results.map(role => rolesId.push(role.id))
+          inquirer.prompt([
+            {
+              type: 'list',
+              message: "What is the employee's new role?",
+              name: 'updateRole',
+              choices: roles
+            }
+          ])
+            .then(function (data1) {
+              let nameIdIndex = names.indexOf(data.updateEmp) + 1
+              let nameId = namesId[namesId.indexOf(nameIdIndex)]
+              let rolesIdIndex = roles.indexOf(data1.updateRole) + 1
+              let roleId = rolesId[rolesId.indexOf(rolesIdIndex)]
 
-        // db.query(`UPDATE employee SET role_id = ? WHERE id = ?`), [roleId, nameId], function (err, results) {
-        //   if (err) throw err;
-        //   console.log(newRole)
-        // }
+              db.query(`UPDATE employees SET role_id=? WHERE id=?;`,[roleId, nameId], function (err, results) {
+                if (err) throw err;
+                console.log(data.updateEmp, data1.updateRole, 'red')
+              });
+            })
+        })
       })
   })
 }
@@ -199,9 +213,6 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-// UPDATE table_name
-// SET column1 = value1, column2 = value2, ...
-// WHERE condition;
 //startMenu() is popping up before I can enter the info to add
 //You might also want to make your queries asynchronous
 // why does it ask "What would you like to do?" twice?

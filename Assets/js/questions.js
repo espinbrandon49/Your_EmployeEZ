@@ -46,11 +46,11 @@ const questions = {
       message: "Which employee do you want to update?",
       name: 'updateEmp',
     },
-    // {
-    //   type: 'list',
-    //   message: "What is the employee's new role?",
-    //   name: 'updateRole'
-    // },
+    {
+      type: 'list',
+      message: "What is the employee's new role?",
+      name: 'updateRole'
+    },
   ],
 }
 module.exports = questions;
