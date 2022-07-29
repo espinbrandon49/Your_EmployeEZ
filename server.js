@@ -26,30 +26,36 @@ function startMenu() {
   inquirer.prompt(questions.startQuestion)
     .then(function (data) {
       switch (data.startMenu) {
-        case "View all departments":
+        case "View All Departments":
           viewDepartment();
           break;
-        case "View all roles":
+        case "View All Roles":
           viewRoles()
           break;
-        case "View all employees":
+        case "View All Employees":
           viewEmployees()
           break;
-        case "Add a department":
+        case "View Employees By Department":
+          viewEmployeesByDept()
+          break;
+        case "View Aggregate Salaries By Department":
+          viewTotalSalaries()
+          break;
+        case "Add A Department":
           addDepartment();
           break;
-        case "Add a role":
+        case "Add A Role":
           addRole()
           break;
-        case "Add an employee":
+        case "Add An Employee":
           addEmployee()
           break;
-        case "Update an employee role":
+        case "Update An Employee Role":
           updateRole()
           break;
       }
     })
-}// why does it ask "What would you like to do?" twice?
+}
 
 function viewDepartment() {
   db.query('SELECT * FROM department', function (err, results) {
@@ -59,14 +65,29 @@ function viewDepartment() {
 }
 
 function viewRoles() {
-  db.query('SELECT DISTINCT roles.title, roles.id AS roles_Id, department.name, roles.salary FROM department JOIN roles ON department.id = department_id', function (err, results) {
+  db.query('SELECT DISTINCT  roles.id AS id, roles.title, department.name AS department, roles.salary FROM department JOIN roles ON department.id = department_id', function (err, results) {
     console.table(results);
     startMenu()
   })
 }
 
 function viewEmployees() {
-  db.query('SELECT DISTINCT employees.id, employees.first_name, employees.last_name, roles.title, department.name, roles.salary, CONCAT(b.first_name, " ", b.last_name) AS Manager FROM employees JOIN roles ON employees.role_id = roles.id JOIN department ON department.id = roles.department_id LEFT JOIN employees b ON employees.manager_id = b.id', function (err, results) {
+  db.query('SELECT DISTINCT employees.id, employees.first_name, employees.last_name, roles.title, department.name AS department, roles.salary, CONCAT(b.first_name, " ", b.last_name) AS manager FROM employees JOIN roles ON employees.role_id = roles.id JOIN department ON department.id = roles.department_id LEFT JOIN employees b ON employees.manager_id = b.id', function (err, results) {
+    console.table(results);
+    startMenu()
+  });
+}
+
+function viewEmployeesByDept() {
+  db.query(`SELECT CONCAT(employees.first_name," ",employees.last_name) AS employee, department.name AS department FROM employees JOIN roles ON employees.role_id = roles.id JOIN department ON roles.department_id = department.id
+  `, function (err, results) {
+    console.table(results);
+    startMenu()
+  });
+}
+
+function viewTotalSalaries() {
+  db.query(`SELECT department.name, SUM(roles.salary) AS aggregate_salaries FROM employees JOIN roles ON roles.id = employees.role_id JOIN department ON department.id = roles.department_id GROUP BY department.name`, function (err, results) {
     console.table(results);
     startMenu()
   });
@@ -107,14 +128,13 @@ function addRole() {
             let deptId = departmentsId[departmentsId.indexOf(deptIdIndex)]
             db.query(`INSERT INTO roles (title, salary , department_id) VALUES (?, ?, ?)`, [data.addRoleName, data.addRoleSalary, deptId], function (err, results) {
               if (err) throw err;
-              console.log([data.addRoleName, data.addRoleSalary, deptId])
+              console.log(`${data.addRoleName} added as a new role`)
               startMenu()
             });
           })
       })
     })
-  //GOOD
-}//GOOD
+}
 
 function addEmployee() {
   inquirer.prompt(questions.addEmployee)
@@ -157,7 +177,7 @@ function addEmployee() {
                   let managerId = managerIds[managerIds.indexOf(managerIdIndex)]
                   db.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [data.empFName, data.empLName, roleId, managerId], function (err, results) {
                     if (err) throw err;
-                    console.log([data.empFName, data.empLName, roleId, managerId])
+                    console.log(`${data.empFName} ${data.empLName} added as a new employee`)
                     startMenu()
                   });
                 })
@@ -205,7 +225,7 @@ function updateRole() {
 
               db.query(`UPDATE employees SET role_id=? WHERE id=?;`, [roleId, nameId], function (err, results) {
                 if (err) throw err;
-                console.log(data.updateEmp, data1.updateRole, 'red')
+                console.log(`${data.updateEmp} updated as a ${data1.updateRole}`)
                 startMenu()
               });
             })
@@ -213,14 +233,15 @@ function updateRole() {
       })
   })
 }
+startMenu()
 
-app.use((req, res) => {
-  res.status(404).end();
-});
+// app.use((req, res) => {
+//   res.status(404).end();
+// });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  startMenu()
-})
+// app.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`);
+//   startMenu()
+// })
 
 

@@ -21,7 +21,3 @@ VALUES
 ('William', 'Harrison', 5, 6);
 -- SELECT * FROM employees;
 
--- SELECT DISTINCT employees.id, employees.first_name, employees.last_name, roles.title, department.name, roles.salary, CONCAT(b.first_name, " ", b.last_name) AS Manager FROM employees JOIN roles ON employees.role_id = roles.id JOIN department ON department.id = roles.department_id LEFT JOIN employees b ON employees.manager_id = b.id
-
-
-

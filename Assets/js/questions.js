@@ -3,7 +3,7 @@ const questions = {
     type: 'list',
     message: "What would you like to do?",
     name: 'startMenu',
-    choices: ["View all departments", "View all roles", "View all employees", "Add a department", "Add a role", "Add an employee", "Update an employee role"]
+    choices: ["View All Departments", "View All Roles", "View All Employees", "View Employees By Department", "View Aggregate Salaries By Department", "Add A Department", "Add A Role", "Add An Employee", "Update An Employee Role"]
   },
   addDepartment: {
     type: 'input',
