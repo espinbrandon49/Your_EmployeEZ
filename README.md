@@ -3,7 +3,8 @@
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
 
 ## Description 
-A content management system (CMS) as command-line application to manage a company's employee database, using Node.js, Inquirer, and MySQL.
+A content management system (CMS) to allow non-developers to easily view and interact with information stored in an employees database.
+This is a command-line application to manage a company's employee database, using Node.js, Inquirer, and MySQL.
 
 * [GitHub repository](https://github.com/espinbrandon49/Your_EmployeEZ)
 * [Demo Video](https://user-images.githubusercontent.com/102924713/181693656-b6bab199-87c1-42a6-9cf1-6364c587c887.mp4)
