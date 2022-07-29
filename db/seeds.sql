@@ -20,4 +20,3 @@ VALUES
 ('Martin', 'Vanburen', 8, NULL),
 ('William', 'Harrison', 5, 6);
 -- SELECT * FROM employees;
-
